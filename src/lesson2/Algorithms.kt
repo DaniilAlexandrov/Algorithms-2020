@@ -2,6 +2,8 @@
 
 package lesson2
 
+
+
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -78,9 +80,13 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  *
  * Общий комментарий: решение из Википедии для этой задачи принимается,
  * но приветствуется попытка решить её самостоятельно.
+ * Трудоемкость и ресурсоемкость - O(n)
  */
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
-    TODO()
+    var res = 0
+    for (i in 1..menNumber)
+        res = (res + choiceInterval) % i
+    return res + 1
 }
 
 /**
@@ -93,9 +99,29 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * При сравнении подстрок, регистр символов *имеет* значение.
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
+ *
+ * Трудоемкость и ресурсоемкость - O(m * n)
+ * m и n - количество символов в первом и втором слове
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    TODO()
+    val matrix = Array(first.length) { IntArray(second.length) }
+    var maxX = 0
+    var maxY = 0
+    for (i in first.indices) {
+        for (j in second.indices) {
+            if (first[i] == second[j]) {
+                if (i > 0 && j > 0)
+                    matrix[i][j] = matrix[i - 1][j - 1] + 1
+                else
+                    matrix[i][j] = 1
+                if (matrix[i][j] > matrix[maxX][maxY]) {
+                    maxX = i
+                    maxY = j
+                }
+            } else matrix[i][j] = 0
+        }
+    }
+    return first.substring(maxX - matrix[maxX][maxY] + 1, maxX + 1)
 }
 
 /**
@@ -107,7 +133,27 @@ fun longestCommonSubstring(first: String, second: String): String {
  *
  * Справка: простым считается число, которое делится нацело только на 1 и на себя.
  * Единица простым числом не считается.
+ * Трудоемкость - O(n*log(log(n)))
+ * Ресурсоемкость - O(n)
  */
 fun calcPrimesNumber(limit: Int): Int {
-    TODO()
+    if (limit <= 1) return 0
+    val numbers = BooleanArray(limit + 1) { true }
+    var p = 2
+    var res = 0
+    while (p * p <= limit) {
+        if (numbers[p]) {
+            var i = p * 2
+            while (i <= limit) {
+                numbers[i] = false
+                i += p
+            }
+        }
+        p++
+    }
+    for (i in 2..limit) {
+        if (numbers[i])
+            res++
+    }
+    return res
 }

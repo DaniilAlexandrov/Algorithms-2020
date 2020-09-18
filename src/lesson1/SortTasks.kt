@@ -2,6 +2,8 @@
 
 package lesson1
 
+import java.io.File
+
 /**
  * Сортировка времён
  *
@@ -95,9 +97,51 @@ fun sortAddresses(inputName: String, outputName: String) {
  * 24.7
  * 99.5
  * 121.3
+ * Трудоемкость - O(n)
+ * Ресурсоемкость - O(1)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    TODO()
+    val list = IntArray(7731)
+
+    File(inputName).bufferedReader().use {
+        var line = it.readLine()
+        while (line != null) {
+            val index = (line.toDouble() * 10 + 2730).toInt()
+            list[index]++
+            line = it.readLine()
+        }
+    }
+
+    File(outputName).bufferedWriter().use {
+        for (i in list.indices) {
+            while (list[i] > 0) {
+                it.write(((i - 2730) / 10.0).toString())
+                it.newLine()
+                list[i]--
+            }
+        }
+    }
+/*    val map = mutableMapOf<Int, Int>()
+    File(inputName).bufferedReader().use {
+        var line = it.readLine()
+        while (line != null) {
+            val index = (line.toDouble() * 10 + 2730).toInt()
+            map.putIfAbsent(index, 0)
+            map[index] = map[index]!! + 1
+            line = it.readLine()
+        }
+    }
+    val res = map.toSortedMap(compareBy { it })
+    File(outputName).bufferedWriter().use {
+        for (entry in res) {
+            var k = entry.value
+            while (k != 0) {
+                it.write((((entry.key - 2730) / 10.0).toString()))
+                it.newLine()
+                k--
+            }
+        }
+    }*/
 }
 
 /**
@@ -128,9 +172,42 @@ fun sortTemperatures(inputName: String, outputName: String) {
  * 2
  * 2
  * 2
+ * Трудоемкость и ресурсоемкость - O(n)
  */
 fun sortSequence(inputName: String, outputName: String) {
-    TODO()
+    val map = mutableMapOf<Int, Int>()
+    var number = 0
+    var occurrences = 0
+    val text = mutableListOf<String>()
+
+    File(inputName).bufferedReader().use {
+        var line = it.readLine()
+        while (line != null) {
+            val lineValue = line.toInt()
+            map[lineValue] = map.getOrPut(lineValue) { 0 } + 1
+            if (occurrences == map[lineValue] && number > lineValue)
+                number = lineValue
+            if (occurrences < map[lineValue]!!) {
+                occurrences = map[lineValue]!!
+                number = lineValue
+            }
+            text.add(line)
+            line = it.readLine()
+        }
+    }
+
+    File(outputName).bufferedWriter().use {
+        for (line in text) {
+            if (line.toInt() != number) {
+                it.write(line)
+                it.newLine()
+            }
+        }
+        for (i in 0 until occurrences) {
+            it.write(number.toString())
+            it.newLine()
+        }
+    }
 }
 
 /**
