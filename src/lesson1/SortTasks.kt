@@ -101,13 +101,15 @@ fun sortAddresses(inputName: String, outputName: String) {
  * Ресурсоемкость - O(1)
  */
 fun sortTemperatures(inputName: String, outputName: String) {
-    val list = IntArray(7731)
+    val maxTemp = 7731
+    val minTemp = 2730
+    val list = IntArray(maxTemp)
 
     File(inputName).bufferedReader().use {
         var line = it.readLine()
         while (line != null) {
-            val index = (line.toDouble() * 10 + 2730).toInt()
-            list[index]++
+            val temperature = (line.toDouble() * 10 + minTemp).toInt()
+            list[temperature]++
             line = it.readLine()
         }
     }
@@ -115,33 +117,12 @@ fun sortTemperatures(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
         for (i in list.indices) {
             while (list[i] > 0) {
-                it.write(((i - 2730) / 10.0).toString())
+                it.write(((i - minTemp) / 10.0).toString())
                 it.newLine()
                 list[i]--
             }
         }
     }
-/*    val map = mutableMapOf<Int, Int>()
-    File(inputName).bufferedReader().use {
-        var line = it.readLine()
-        while (line != null) {
-            val index = (line.toDouble() * 10 + 2730).toInt()
-            map.putIfAbsent(index, 0)
-            map[index] = map[index]!! + 1
-            line = it.readLine()
-        }
-    }
-    val res = map.toSortedMap(compareBy { it })
-    File(outputName).bufferedWriter().use {
-        for (entry in res) {
-            var k = entry.value
-            while (k != 0) {
-                it.write((((entry.key - 2730) / 10.0).toString()))
-                it.newLine()
-                k--
-            }
-        }
-    }*/
 }
 
 /**

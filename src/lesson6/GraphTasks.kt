@@ -2,6 +2,10 @@
 
 package lesson6
 
+import lesson6.impl.GraphBuilder
+
+typealias Vertex = Graph.Vertex
+typealias Edge = Graph.Edge
 /**
  * Эйлеров цикл.
  * Средняя
@@ -59,9 +63,40 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
  * E    F    I
  * |
  * J ------------ K
+ * Трудоемкость - О(Vertex * Edge)
+ * Ресурсоемкость - O(Vertex + Edge)
  */
 fun Graph.minimumSpanningTree(): Graph {
-    TODO()
+    val builder = GraphBuilder()
+    if (vertices.isEmpty()) return builder.build()
+    val randomVertex = vertices.random()
+    val vertexSet = mutableSetOf(randomVertex)
+    val edgeSet = mutableSetOf<Edge>()
+
+    fun connect(vertex: Vertex) {
+        for ((ver, edge) in getConnections(vertex)) {
+            if (!vertexSet.contains(ver)) {
+                vertexSet.add(ver)
+                edgeSet.add(edge)
+                connect(ver)
+            }
+        }
+    }
+    connect(randomVertex)
+    return builder.apply {
+        addVertex(randomVertex.name)
+        if (edgeSet.first().begin == randomVertex)
+            for (edge in edgeSet) {
+                addVertex(edge.end.name)
+                addConnection(edge)
+            }
+        else
+            for (edge in edgeSet) {
+                addVertex(edge.begin.name)
+                addConnection(edge)
+            }
+    }.build()
+
 }
 
 /**

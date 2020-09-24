@@ -3,7 +3,6 @@
 package lesson2
 
 
-
 /**
  * Получение наибольшей прибыли (она же -- поиск максимального подмассива)
  * Простая
@@ -80,7 +79,8 @@ fun optimizeBuyAndSell(inputName: String): Pair<Int, Int> {
  *
  * Общий комментарий: решение из Википедии для этой задачи принимается,
  * но приветствуется попытка решить её самостоятельно.
- * Трудоемкость и ресурсоемкость - O(n)
+ * Трудоемкость - O(n)
+ * Ресурсоемкость - О(1)
  */
 fun josephTask(menNumber: Int, choiceInterval: Int): Int {
     var res = 0
@@ -100,28 +100,30 @@ fun josephTask(menNumber: Int, choiceInterval: Int): Int {
  * Если имеется несколько самых длинных общих подстрок одной длины,
  * вернуть ту из них, которая встречается раньше в строке first.
  *
- * Трудоемкость и ресурсоемкость - O(m * n)
- * m и n - количество символов в первом и втором слове
+ * Трудоемкость - O(n * m)
+ * Ресурсоемкость - O(m)
+ * n и m - количество символов в первом и втором слове
  */
 fun longestCommonSubstring(first: String, second: String): String {
-    val matrix = Array(first.length) { IntArray(second.length) }
-    var maxX = 0
-    var maxY = 0
-    for (i in first.indices) {
-        for (j in second.indices) {
-            if (first[i] == second[j]) {
-                if (i > 0 && j > 0)
-                    matrix[i][j] = matrix[i - 1][j - 1] + 1
-                else
-                    matrix[i][j] = 1
-                if (matrix[i][j] > matrix[maxX][maxY]) {
-                    maxX = i
-                    maxY = j
+    val array = IntArray(second.length) { 0 }
+    val sb = StringBuilder()
+    var i = 0
+    var length = 0
+    for (letter in first) {
+        for (j in array.size - 1 downTo 0) {
+            if (letter == second[j]) {
+                array[j] = 1 + if (j == 0) 0 else array[j - 1]
+                if (length < array[j]) {
+                    i = j
+                    length = array[j]
                 }
-            } else matrix[i][j] = 0
+            } else
+                array[j] = 0
         }
     }
-    return first.substring(maxX - matrix[maxX][maxY] + 1, maxX + 1)
+    for (k in i + 1 - length..i)
+        sb.append(second[k])
+    return sb.toString()
 }
 
 /**
