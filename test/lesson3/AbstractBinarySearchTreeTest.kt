@@ -162,6 +162,10 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        val testTree = KtBinarySearchTree<Int>()
+        testTree.addAll(listOf(4, 5, 6, 7, 8))
+        testTree.removeAll(listOf(5, 7))
+        assertEquals(3, testTree.size)
     }
 
     protected fun doIteratorTest() {
@@ -200,10 +204,16 @@ abstract class AbstractBinarySearchTreeTest {
                     "BinarySearchTreeIterator doesn't traverse the tree correctly."
                 )
             }
-            assertFailsWith<IllegalStateException>("Something was supposedly returned after the elements ended") {
+            assertFailsWith<NoSuchElementException>("Something was supposedly returned after the elements ended") {
                 binaryIter.next()
             }
             println("All clear!")
+        }
+        val testTree = KtBinarySearchTree<Int>()
+        testTree.addAll(listOf(4, 5, 6, 7, 8))
+        testTree.removeAll(listOf(4, 5, 6, 7, 8))
+        assertFailsWith<NoSuchElementException> {
+            testTree.iterator().next()
         }
     }
 
@@ -271,6 +281,11 @@ abstract class AbstractBinarySearchTreeTest {
                 )
             }
             println("All clear!")
+        }
+        val testTree = KtBinarySearchTree<Int>()
+        testTree.addAll(listOf(4, 5, 6, 7, 8))
+        assertFailsWith<IllegalStateException> {
+            testTree.iterator().remove()
         }
     }
 

@@ -166,10 +166,11 @@ fun sortSequence(inputName: String, outputName: String) {
         while (line != null) {
             val lineValue = line.toInt()
             map[lineValue] = map.getOrPut(lineValue) { 0 } + 1
+            val key = map.getValue(lineValue)
             if (occurrences == map[lineValue] && number > lineValue)
                 number = lineValue
-            if (occurrences < map[lineValue]!!) {
-                occurrences = map[lineValue]!!
+            if (occurrences < key) {
+                occurrences = key
                 number = lineValue
             }
             text.add(line)

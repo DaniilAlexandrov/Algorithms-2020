@@ -80,9 +80,11 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
      * (в Котлине тип параметера изменён с Object на тип хранимых в дереве данных)
      *
      * Средняя
-     * Трудоемкость - O(n)
+     * Трудоемкость - O(n), где n - высота дерева.
+     * В среднем случае имеем O(log(n)), в худшем - O(n)
      * Ресурсоемкость - О(1)
      */
+
     override fun remove(element: T): Boolean {
         val node = find(element)
         return if (node == null || element.compareTo(node.value) != 0) false
@@ -93,10 +95,10 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
         }
     }
 
-    private fun removeRecursively(findIn: Node<T>?, end: Node<T>?): Node<T>? {
+    private fun removeRecursively(findIn: Node<T>?, end: Node<T>): Node<T>? {
         if (findIn == null) return null
         var start = findIn
-        when (end!!.value.compareTo(start.value)) {
+        when (end.value.compareTo(start.value)) {
             1 -> start.right = removeRecursively(start.right, end)
             -1 -> start.left = removeRecursively(start.left, end)
             else -> if (start.left != null && start.right != null) {
@@ -160,7 +162,7 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Ресурсоемкость - О(1)
          */
         override fun next(): T {
-            check(hasNext()) // Просили NoSuchElementException, а требует IllegalStateException
+            if (stack.isEmpty()) throw NoSuchElementException()
             var node = stack.pop()
             currentNode = node
             if (node.right != null) {
@@ -189,6 +191,7 @@ class KtBinarySearchTree<T : Comparable<T>> : AbstractMutableSet<T>(), Checkable
          * Ресурсоемкость - О(1)
          */
         override fun remove() {
+            //val currentNodeValue = currentNode?.value ?: throw IllegalStateException()
             remove(currentNode?.value ?: throw IllegalStateException())
             currentNode = null
         }
