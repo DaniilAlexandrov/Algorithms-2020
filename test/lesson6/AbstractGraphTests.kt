@@ -147,7 +147,7 @@ abstract class AbstractGraphTests {
             addConnection(a, d)
             addConnection(b, c)
             addConnection(b, d)
-            addConnection(c ,d)
+            addConnection(c, d)
         }.build()
         val testTree = testGraph.minimumSpanningTree()
         assertEquals(3, testTree.edges.size)
@@ -197,6 +197,7 @@ abstract class AbstractGraphTests {
         assertEquals(4, tree3.findBridges().size)
     }
 
+    @Suppress("UNUSED_VARIABLE")
     fun largestIndependentVertexSet(largestIndependentVertexSet: Graph.() -> Set<Graph.Vertex>) {
         val emptyGraph = GraphBuilder().build()
         assertTrue(emptyGraph.largestIndependentVertexSet().isEmpty())
@@ -271,6 +272,20 @@ abstract class AbstractGraphTests {
         assertEquals(
             setOf(cross["A"], cross["B"], cross["C"], cross["D"]),
             cross.largestIndependentVertexSet()
+        )
+        val test = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            addConnection(a, b)
+            addConnection(d, e)
+            addConnection(b, d)
+        }.build()
+        assertEquals(
+            setOf(test["D"], test["A"], test["C"]),
+            test.largestIndependentVertexSet()
         )
     }
 

@@ -6,6 +6,7 @@ import lesson6.impl.GraphBuilder
 
 typealias Vertex = Graph.Vertex
 typealias Edge = Graph.Edge
+
 /**
  * Эйлеров цикл.
  * Средняя
@@ -69,7 +70,7 @@ fun Graph.findEulerLoop(): List<Graph.Edge> {
 fun Graph.minimumSpanningTree(): Graph {
     val builder = GraphBuilder()
     if (vertices.isEmpty()) return builder.build()
-    val randomVertex = vertices.random()
+    val randomVertex = vertices.first()
     val vertexSet = mutableSetOf(randomVertex)
     val edgeSet = mutableSetOf<Edge>()
 
@@ -124,9 +125,70 @@ fun Graph.minimumSpanningTree(): Graph {
  * Если на входе граф с циклами, бросить IllegalArgumentException
  *
  * Эта задача может быть зачтена за пятый и шестой урок одновременно
+ * Трудоемкость - O(Vertex * Edge)
+ * Ресурсоемкость - O(Vertex)
  */
 fun Graph.largestIndependentVertexSet(): Set<Graph.Vertex> {
-    TODO()
+    if (vertices.isEmpty()) return emptySet()
+
+    val remaining = vertices
+    val trees = mutableSetOf<Vertex>()
+
+    fun createTree() {
+        val tree = remaining.first()
+        trees.add(tree)
+        remaining.remove(tree)
+        var neighbours = getNeighbors(tree).filter { remaining.contains(it) }
+        while (neighbours.isNotEmpty()) {
+            val newNeighbours = mutableListOf<Vertex>()
+            neighbours.forEach {
+                newNeighbours += getNeighbors(it).filter { vertex -> remaining.contains(vertex) }
+                remaining.remove(it)
+            }
+            neighbours = newNeighbours
+        }
+    }
+
+    while (remaining.isNotEmpty())
+        createTree()
+
+    fun Set<Vertex>.getLargestSet(other: Set<Vertex>): Set<Vertex> {
+        when {
+            this.size > other.size -> return this
+            this.size < other.size -> return other
+            else -> vertices.forEach {
+                if (this.contains(it)) return this
+                if (other.contains(it)) return other
+            }
+        }
+        return this
+    }
+
+    val sets = mutableMapOf<Vertex, Set<Vertex>>()
+
+    fun createSet(vertex: Vertex, previous: Set<Vertex>): Set<Vertex> {
+        if (sets[vertex] != null) return sets.getValue(vertex)
+        val children = mutableSetOf<Vertex>()
+        val grandChildren = mutableSetOf<Vertex>()
+        val tempList = mutableSetOf<Vertex>()
+        getNeighbors(vertex).filter { !previous.contains(it) }.forEach {
+            tempList += getNeighbors(it)
+            tempList.remove(vertex)
+            children += createSet(it, previous + vertex)
+        }
+        tempList.filter { !previous.contains(it) }.forEach {
+            grandChildren += createSet(it, previous + vertex)
+        }
+        grandChildren.add(vertex)
+        sets[vertex] = children.getLargestSet(grandChildren)
+        return sets.getValue(vertex)
+    }
+
+    val sum = mutableSetOf<Vertex>()
+    trees.forEach {
+        sum += createSet(it, setOf(it))
+    }
+    return sum
 }
 
 /**
