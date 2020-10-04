@@ -11,7 +11,7 @@ class HeuristicsTestsKotlin : AbstractHeuristicsTests() {
         fillKnapsackCompareWithGreedyTest { load, items ->
             fillKnapsackHeuristics(
                 load, items, 100,
-                100
+                50
             )
         }
     }
