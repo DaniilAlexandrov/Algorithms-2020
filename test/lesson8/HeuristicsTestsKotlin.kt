@@ -8,7 +8,12 @@ class HeuristicsTestsKotlin : AbstractHeuristicsTests() {
     @Test
     @Tag("12")
     fun testFillKnapsackCompareWithGreedyTest() {
-        fillKnapsackCompareWithGreedyTest { load, items -> fillKnapsackHeuristics(load, items) }
+        fillKnapsackCompareWithGreedyTest { load, items ->
+            fillKnapsackHeuristics(
+                load, items, 100,
+                100
+            )
+        }
     }
 
     @Test
